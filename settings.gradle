@@ -1,0 +1,2 @@
+rootProject.name = "ScalableCapital"
+include ':app'

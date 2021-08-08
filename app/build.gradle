@@ -35,14 +35,34 @@ android {
 
 dependencies {
     // Dagger dependency injection
-    def daggerVersion = '2.38.1'
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "javax.inject:javax.inject:$javaxInjectVersion"
+
+    //retrofit coroutine
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-moshi:$moshiRetrofitVersion"
+
+    //coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineAndroidVersion"
+
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    //moshi
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "junit:junit:$junitVersion"
+
     implementation "javax.inject:javax.inject:$javaxInjectVersion"
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'

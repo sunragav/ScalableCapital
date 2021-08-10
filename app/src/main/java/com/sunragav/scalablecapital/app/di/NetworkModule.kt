@@ -1,7 +1,9 @@
 package com.sunragav.scalablecapital.app.di
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.sunragav.scalablecapital.BuildConfig
+import com.sunragav.scalablecapital.repository.remote.api.RepoService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,8 +40,12 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideMoshi(): Moshi {
-        return Moshi.Builder().build()
+        return Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     }
+
+    @Provides
+    fun repoService(retrofit: Retrofit): RepoService = retrofit.create(RepoService::class.java)
+
 
     private fun getInterceptorLevel(): HttpLoggingInterceptor.Level {
         return if (BuildConfig.DEBUG)

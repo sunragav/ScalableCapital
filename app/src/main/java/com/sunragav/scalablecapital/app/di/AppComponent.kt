@@ -13,7 +13,9 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
-        NetworkModule::class
+        NetworkModule::class,
+        DataModule::class,
+        PresentationModule::class
     ]
 )
 interface AppComponent : AndroidInjector<ScalableCapitalApplication> {

@@ -8,6 +8,9 @@ import dagger.Provides
 @Module
 class PresentationModule {
     @Provides
-    fun provideRepoViewModelFactory(repoService: RepoService, @Owner owner: String) =
+    fun provideRepoViewModelFactory(
+        repoService: RepoService,
+        @Owner owner: String
+    ) =
         HomeViewModel.Factory(repoService, owner)
 }

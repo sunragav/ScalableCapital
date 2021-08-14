@@ -6,4 +6,5 @@
     <string name="commits_fragment_label">Commits for %s</string>
 
     <string name="avatar_of_the_owner">Avatar of the owner</string>
+    <string name="commits">%d Commits</string>
 </resources>

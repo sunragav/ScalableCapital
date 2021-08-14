@@ -20,13 +20,13 @@
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
         <deepLink
-            app:uri="scalablecapital://commits/{repoName}"
-            android:autoVerify="true" />
-        <argument
-            android:name="repoName"
-            app:argType="string" />
+            android:autoVerify="true"
+            app:uri="scalablecapital://commits/{repoData}" />
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <argument
+            android:name="repoData"
+            app:argType="com.sunragav.scalablecapital.repository.async.commits.RepoData" />
     </fragment>
 </navigation>

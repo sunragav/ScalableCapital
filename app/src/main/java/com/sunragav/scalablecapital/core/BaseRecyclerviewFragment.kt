@@ -16,7 +16,7 @@ import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-abstract class BaseFragment<T : GitHubModel> : Fragment() {
+abstract class BaseRecyclerViewFragment<T : GitHubModel> : Fragment() {
     @Inject
     lateinit var factory: HomeViewModel.Factory
     protected val viewModel: HomeViewModel by activityViewModels(factoryProducer = { factory })

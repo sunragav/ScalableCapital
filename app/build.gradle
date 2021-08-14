@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -20,10 +21,14 @@ android {
         debug{
             buildConfigField("String", "BASE_URL", "\"${debugBaseUrl}\"")
             buildConfigField("String", "OWNER", "\"${debugOwner}\"")
+            buildConfigField("String", "AUTHORISATION", "\"${debugAuth}\"")
+            buildConfigField("String", "AUTHORISATION_PREFIX", "\"${authPrefix}\"")
         }
         release {
             buildConfigField("String", "BASE_URL", "\"${prodBaseUrl}\"")
             buildConfigField("String", "OWNER", "\"${prodOwner}\"")
+            buildConfigField("String", "AUTHORISATION", "\"${prodAuth}\"")
+            buildConfigField("String", "AUTHORISATION_PREFIX", "\"${authPrefix}\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -54,6 +59,7 @@ dependencies {
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit2Version"
     implementation "com.squareup.retrofit2:converter-moshi:$moshiRetrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit2Version"
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineAndroidVersion"

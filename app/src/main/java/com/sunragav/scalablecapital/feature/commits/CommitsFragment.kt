@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.sunragav.scalablecapital.R
-import com.sunragav.scalablecapital.core.BaseFragment
+import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
 import com.sunragav.scalablecapital.databinding.FragmentSecondBinding
 import com.sunragav.scalablecapital.feature.commits.adapter.CommitsAdapter
 import com.sunragav.scalablecapital.repository.remote.model.Commit
@@ -20,10 +20,10 @@ import timber.log.Timber
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 @InternalCoroutinesApi
-class CommitsFragment : BaseFragment<Commit>() {
+class CommitsFragment : BaseRecyclerViewFragment<Commit>() {
     private val args: CommitsFragmentArgs by navArgs()
     override val listAdapter = CommitsAdapter()
-
+    private lateinit var binding: FragmentSecondBinding
     override fun setupViewModel() {
         viewModel.commitsList.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
@@ -33,21 +33,31 @@ class CommitsFragment : BaseFragment<Commit>() {
                 }
             }
         }
-        viewModel.repoName.postValue(args.repoName)
+        viewModel.repoData.postValue(args.repoData)
         viewModel.title.postValue(
             resources.getString(
                 R.string.commits_fragment_label,
-                args.repoName
+                args.repoData.repoName
             )
         )
+        viewModel.commitsCountLiveData.observe(viewLifecycleOwner) { commitsCountData ->
+            commitsCountData.commitsCountMap[1]?.let {
+                if (commitsCountData.maxCommit != 0) {
+                    binding.commitsCountView.render(
+                        it.commitsCount,
+                        commitsCountData.maxCommit,
+                        it.month
+                    )
+                }
+            }
+        }
     }
 
     override fun getViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): Pair<FragmentSecondBinding, RecyclerView> {
-        val binding = FragmentSecondBinding.inflate(inflater, container, false)
+        binding = FragmentSecondBinding.inflate(inflater, container, false)
         return Pair(binding, binding.rvCommits)
     }
-
 }

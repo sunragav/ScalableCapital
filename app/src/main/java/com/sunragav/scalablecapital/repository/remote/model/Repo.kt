@@ -6,7 +6,9 @@ data class Repo(
     val full_name: String,
     val description: String?,
     val owner: Owner,
-    val stargazers_count: Int
+    val stargazers_count: Int,
+    val created_at: String,
+    val updated_at: String
 ) : GitHubModel(identifier = id.toString()) {
     data class Owner(
         val login: String,

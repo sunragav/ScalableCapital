@@ -1,13 +1,12 @@
 package com.sunragav.scalablecapital.feature.home.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
-import com.sunragav.scalablecapital.core.util.DeepLinks
-import com.sunragav.scalablecapital.core.util.navigateUriWithDefaultOptions
 import com.sunragav.scalablecapital.databinding.RepoListItemBinding
+import com.sunragav.scalablecapital.feature.home.ReposFragmentDirections
+import com.sunragav.scalablecapital.repository.async.commits.RepoData
 import com.sunragav.scalablecapital.repository.remote.model.Repo
 
 
@@ -20,15 +19,22 @@ class ReposAdapter : AbstractPagingAdapter<Repo>() {
         return object : AbstractPagingAdapter.ViewHolder<Repo>(binding) {
             override fun bind(position: Int) {
                 val model = getItem(position)
-                com.bumptech.glide.Glide.with(binding.root.context)
-                    .load(model?.owner?.avatar_url)
-                    .into(binding.imgAvatar)
-                binding.tvDescription.text = model?.description
-                binding.tvRepoName.text = model?.full_name
-                binding.tvOwnerName.text = model?.owner?.login
-                binding.root.setOnClickListener {
-                    it.findNavController()
-                        .navigateUriWithDefaultOptions(Uri.parse("${DeepLinks.COMMITS}/${model?.name}"))
+                model?.run {
+                    com.bumptech.glide.Glide.with(binding.root.context)
+                        .load(owner.avatar_url)
+                        .into(binding.imgAvatar)
+                    binding.tvDescription.text = description
+                    binding.tvRepoName.text = full_name
+                    binding.tvOwnerName.text = owner.login
+                    binding.root.setOnClickListener { view ->
+                        if (name.isNotBlank() && created_at.isNotBlank()) {
+                            view.findNavController().navigate(
+                                ReposFragmentDirections.actionFirstFragmentToSecondFragment(
+                                    RepoData(name, created_at)
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }

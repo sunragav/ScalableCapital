@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.sunragav.scalablecapital.core.BaseFragment
+import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
 import com.sunragav.scalablecapital.databinding.FragmentFirstBinding
 import com.sunragav.scalablecapital.feature.home.adapter.ReposAdapter
@@ -19,7 +19,7 @@ import timber.log.Timber
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 @InternalCoroutinesApi
-class ReposFragment : BaseFragment<Repo>() {
+class ReposFragment : BaseRecyclerViewFragment<Repo>() {
 
     override fun setupViewModel() {
         lifecycleScope.launch {

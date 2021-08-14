@@ -13,4 +13,12 @@ class DataModule {
     @Provides
     @BaseUrl
     fun provideBaseUrl() = BuildConfig.BASE_URL
+
+    @Provides
+    @AuthToken
+    fun provideAuth() = BuildConfig.AUTHORISATION
+
+    @Provides
+    @AuthTokenPrefix
+    fun provideAuthPrefix() = BuildConfig.AUTHORISATION_PREFIX
 }

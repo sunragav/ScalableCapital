@@ -9,14 +9,16 @@ interface RepoService {
     @GET("users/{owner}/repos")
     suspend fun getRepos(
         @Path("owner") owner: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
     ): Response<List<RepoResponse>>
 
     @GET("repos/{owner}/{name}/commits")
     suspend fun getCommits(
         @Path("owner") owner: String,
         @Path("name") name: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
     ): Response<List<CommitResponse>>
 
     @Headers("Content-Type: application/json")

@@ -1,18 +1,22 @@
 package com.sunragav.scalablecapital.repository.async.commits
 
+import android.os.Parcelable
 import com.squareup.moshi.Moshi
 import com.sunragav.scalablecapital.core.util.DateRange.Companion.getDateRangesForYear
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
 import com.sunragav.scalablecapital.repository.remote.model.graphql.CommitsResponse
 import com.sunragav.scalablecapital.repository.remote.model.graphql.HistoryObject
+import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
 import timber.log.Timber
 
+@Parcelize
 data class RepoData(
     val repoName: String,
+    val defaultBranch: String,
     val firstCommitDate: String,
     val lastCommitDate: String
-)
+) : Parcelable
 
 data class CommitsCountData(
     val commitsCountList: List<CommitsCountViewData>,
@@ -20,15 +24,21 @@ data class CommitsCountData(
     val valid: Boolean = true
 )
 
-data class CommitsCountViewData(val month: String, val commitsCount: Int)
+data class CommitsCountViewData(val month: String, val year: String, val commitsCount: Int)
 
 class CommitsCountHelper(
     private val repoService: RepoService,
     private val moshi: Moshi,
     private val user: String,
-    repoName: String
+    repoData: RepoData
 ) {
-    private var repo = RepoData(repoName, "", "")
+    private var repo = RepoData(
+        repoName = repoData.repoName,
+        defaultBranch = repoData.defaultBranch,
+        firstCommitDate = "",
+        lastCommitDate = ""
+    )
+
     suspend fun processCommitsCount(): CommitsCountData {
         getFirstAndLastCommitDate()
         val commitsCountList = mutableListOf<CommitsCountViewData>()
@@ -61,7 +71,7 @@ class CommitsCountHelper(
                         GET_COMMITS_COUNT,
                         user,
                         repo.repoName,
-                        "master",
+                        repo.defaultBranch,
                         dateRangeWithMonth.dateRange.first,
                         dateRangeWithMonth.dateRange.second
                     )
@@ -74,8 +84,9 @@ class CommitsCountHelper(
                     parseResponse(query) { obj ->
                         commitsCountList.add(
                             CommitsCountViewData(
-                                "${dateRangeWithMonth.month} $year",
-                                obj.history?.totalCount ?: 0
+                                month = dateRangeWithMonth.month,
+                                year = year.toString(),
+                                commitsCount = obj.history?.totalCount ?: 0
                             )
                         )
                         count++
@@ -93,6 +104,7 @@ class CommitsCountHelper(
     private suspend fun parseResponse(query: String, useResponse: (HistoryObject) -> Unit) {
         val paramObject = JSONObject()
         paramObject.put("query", query)
+        Timber.d("Graph QL query : %s", query)
         val response = repoService.postDynamicQuery(paramObject.toString())
         if (response.isSuccessful) {
             Timber.d("Graph QL api response: %s", response.body())
@@ -111,7 +123,7 @@ class CommitsCountHelper(
             GET_LAST_COMMITS_DATE_AND_CURSOR,
             user,
             repo.repoName,
-            "master"
+            repo.defaultBranch
         )
         var cursor = ""
         var totalCommits = 0
@@ -146,7 +158,7 @@ class CommitsCountHelper(
             GET_FIRST_COMMIT,
             user,
             repo.repoName,
-            "master",
+            repo.defaultBranch,
             cursor,
             totalCommits - 2
         )

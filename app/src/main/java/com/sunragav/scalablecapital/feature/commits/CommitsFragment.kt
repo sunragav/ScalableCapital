@@ -35,7 +35,7 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
         activityViewModel.title.postValue(
             resources.getString(
                 R.string.commits_fragment_label,
-                args.repoName
+                args.repoData
             )
         )
         with(commitsViewModel) {
@@ -46,7 +46,7 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
                     }
                 }
             }
-            triggerCommitsLoad.postValue(args.repoName)
+            triggerCommitsLoad.postValue(args.repoData)
 
             commitsCountLiveData.observe(viewLifecycleOwner) { commitsCountData ->
                 binding.commitsCountView.update(commitsCountData)

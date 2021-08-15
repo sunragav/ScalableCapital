@@ -8,6 +8,8 @@ import androidx.paging.cachedIn
 import com.squareup.moshi.Moshi
 import com.sunragav.scalablecapital.repository.async.commits.CommitsCountData
 import com.sunragav.scalablecapital.repository.async.commits.CommitsCountHelper
+import com.sunragav.scalablecapital.repository.async.commits.RepoData
+import com.sunragav.scalablecapital.repository.datasource.GitHubPagingDataSource.Companion.PAGE_SIZE
 import com.sunragav.scalablecapital.repository.datasource.commits.CommitsDataSource
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
 import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
@@ -23,17 +25,15 @@ class CommitsViewModel(
 ) : ViewModel() {
 
     private val pagingMediatorLiveData = MediatorLiveData<LiveData<FlowOfPagingDataOfCommits>>()
-    private val commitsCountMediatorLiveData = MediatorLiveData<LiveData<CommitsCountData>>()
-
-    val triggerCommitsLoad = MutableLiveData<String>()
+    val triggerCommitsLoad = MutableLiveData<RepoData>()
     private val commitsCountMutableLiveData = MutableLiveData<CommitsCountData>()
 
     init {
         pagingMediatorLiveData.addSource(triggerCommitsLoad) { currentRepoData ->
             viewModelScope.launch {
                 pagingMediatorLiveData.postValue(MutableLiveData<FlowOfPagingDataOfCommits>().apply {
-                    value = Pager(PagingConfig(pageSize = 30)) {
-                        CommitsDataSource(repoService, owner, currentRepoData)
+                    value = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+                        CommitsDataSource(repoService, owner, currentRepoData.repoName)
                     }.flow.cachedIn(viewModelScope)
                 })
             }
@@ -46,27 +46,12 @@ class CommitsViewModel(
                 ).processCommitsCount()
             }
         }
-        /*commitsCountMediatorLiveData.addSource(triggerCommitsLoad) { currentRepoData ->
-            viewModelScope.launch {
-                commitsCountMediatorLiveData.postValue(
-                    MutableLiveData<CommitsCountData>().apply {
-                        value = CommitsCountHelper(
-                            repoService,
-                            moshi,
-                            owner,
-                            currentRepoData
-                        ).processCommitsCount()
-                    }
-                )
-            }
-        }*/
     }
 
     val commitsList: LiveData<FlowOfPagingDataOfCommits>
         get() = Transformations.switchMap(pagingMediatorLiveData) { it }
 
     val commitsCountLiveData: LiveData<CommitsCountData>
-        //get() = Transformations.switchMap(commitsCountMediatorLiveData) { it }
         get() = commitsCountMutableLiveData
 
     class Factory(

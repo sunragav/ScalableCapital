@@ -7,7 +7,8 @@ data class RepoResponse(
     val description: String?,
     val owner: Owner,
     val stargazers_count: Int,
-    val created_at: String?
+    val created_at: String?,
+    val default_branch: String?
 ) : GitHubModel(identifier = id.toString()) {
     data class Owner(
         val login: String,

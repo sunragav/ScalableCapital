@@ -38,8 +38,4 @@ class GitHubLoadStateAdapter(private val retry: () -> Unit) :
 
     class LoadStateViewHolder(val binding: RepoListExtrasBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-    companion object {
-        private const val GITHUB_REPO_EMPTY = "Git Repository is empty."
-    }
 }

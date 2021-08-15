@@ -13,7 +13,6 @@ import com.sunragav.scalablecapital.core.util.hide
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.CommitsViewBinding
 import com.sunragav.scalablecapital.repository.async.commits.CommitsCountData
-import timber.log.Timber
 
 
 @SuppressLint("CustomViewStyleable")
@@ -25,12 +24,14 @@ class CommitsCountView @JvmOverloads constructor(
     private var binding = CommitsViewBinding.inflate(LayoutInflater.from(context), this, true)
     private lateinit var _commitsCountData: CommitsCountData
     private var currentIndex = 0
-    private var visibleHeight = 0
+    private var imageHeightPercentage = 0f
+    private var displayYear = false
 
     init {
         val attributes = context.obtainStyledAttributes(attrs, AnimatableRectangleView)
-        visibleHeight =
-            attributes.getDimensionPixelSize(R.styleable.AnimatableRectangleView_imageHeight, 0)
+        imageHeightPercentage =
+            attributes.getFloat(R.styleable.AnimatableRectangleView_imageHeightPercent, 0f)
+        displayYear = attributes.getBoolean(R.styleable.AnimatableRectangleView_displayYear, false)
         attributes.recycle()
     }
 
@@ -41,6 +42,7 @@ class CommitsCountView @JvmOverloads constructor(
         } else {
             show()
             binding.ivBar.show()
+            if (displayYear) binding.tvYear.show()
 
             binding.ivBar.layoutParams.height = 0
             currentIndex = 0
@@ -52,24 +54,20 @@ class CommitsCountView @JvmOverloads constructor(
     }
 
     fun render() {
-        val currentCommitsCount = _commitsCountData.commitsCountList[currentIndex].commitsCount
         val maxCommitCount = _commitsCountData.maxCommit
-        val month = _commitsCountData.commitsCountList[currentIndex].month
-        binding.tvMonth.text = month
-        binding.tvCommits.text =
-            resources.getQuantityString(R.plurals.commits, currentCommitsCount, currentCommitsCount)
-        val ratio = currentCommitsCount.toFloat() / maxCommitCount
-        val height = visibleHeight.toFloat() * ratio
-        Timber.d(
-            "CommitsView maxCommit:%d currentComit:%d height:%f",
-            maxCommitCount,
-            currentCommitsCount,
-            height
-        )
+        val height: Int
+        _commitsCountData.commitsCountList[currentIndex].run {
+            binding.tvMonth.text = month
+            binding.tvYear.text = year
+            binding.tvCommits.text =
+                resources.getQuantityString(R.plurals.commits, commitsCount, commitsCount)
+            val ratio = commitsCount.toFloat() / maxCommitCount
+            height = (binding.root.height * (1.0 - imageHeightPercentage) * ratio).toInt()
+        }
         val valueAnimator =
             ValueAnimator.ofInt(
                 binding.ivBar.measuredHeight,
-                height.toInt()
+                height
             )
         valueAnimator.duration = 1500L
         valueAnimator.addUpdateListener {
@@ -97,5 +95,4 @@ class CommitsCountView @JvmOverloads constructor(
             }
         })
     }
-
 }

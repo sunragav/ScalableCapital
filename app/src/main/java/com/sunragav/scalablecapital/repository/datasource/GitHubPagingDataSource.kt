@@ -6,7 +6,7 @@ import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 import retrofit2.Response
 import timber.log.Timber
 
-abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: suspend (Int) -> Response<List<T>>) :
+abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: suspend (Int, Int) -> Response<List<T>>) :
     PagingSource<Int, T>() {
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -21,7 +21,7 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
             // Start refresh at page 1 if undefined.
             val nextPage = params.key ?: 1
             Timber.d("Service call for page:%d", nextPage)
-            val response = serviceCall(nextPage)
+            val response = serviceCall(nextPage, params.loadSize)
             if (response.isSuccessful) {
                 val body = response.body() ?: emptyList()
                 val data = mutableListOf<T>()
@@ -46,5 +46,9 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
             Timber.e("Api Response errorCause:%s", e.cause.toString())
             LoadResult.Error(e)
         }
+    }
+
+    companion object {
+        const val PAGE_SIZE = 30
     }
 }

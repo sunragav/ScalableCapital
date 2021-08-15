@@ -10,7 +10,8 @@
         android:id="@+id/commitsCountView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        app:imageHeight="100dp"
+        app:imageHeightPercent="0.3"
+        app:displayYear="true"
         app:layout_constraintEnd_toStartOf="@+id/rvCommits"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

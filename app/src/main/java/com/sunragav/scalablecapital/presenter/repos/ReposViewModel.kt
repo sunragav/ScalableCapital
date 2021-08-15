@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.sunragav.scalablecapital.repository.datasource.GitHubPagingDataSource.Companion.PAGE_SIZE
 import com.sunragav.scalablecapital.repository.datasource.home.RepoDataSource
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
 import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
@@ -17,7 +18,7 @@ class ReposViewModel(
     private val owner: String
 ) : ViewModel() {
 
-    val repoList: Flow<PagingData<RepoResponse>> = Pager(PagingConfig(pageSize = 30)) {
+    val repoList: Flow<PagingData<RepoResponse>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         RepoDataSource(repoService, owner)
     }.flow.cachedIn(viewModelScope)
 

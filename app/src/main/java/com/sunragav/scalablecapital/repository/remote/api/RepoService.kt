@@ -1,7 +1,7 @@
 package com.sunragav.scalablecapital.repository.remote.api
 
-import com.sunragav.scalablecapital.repository.remote.model.Commit
-import com.sunragav.scalablecapital.repository.remote.model.Repo
+import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
+import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -10,14 +10,14 @@ interface RepoService {
     suspend fun getRepos(
         @Path("owner") owner: String,
         @Query("page") page: Int
-    ): Response<List<Repo>>
+    ): Response<List<RepoResponse>>
 
     @GET("repos/{owner}/{name}/commits")
     suspend fun getCommits(
         @Path("owner") owner: String,
         @Path("name") name: String,
         @Query("page") page: Int
-    ): Response<List<Commit>>
+    ): Response<List<CommitResponse>>
 
     @Headers("Content-Type: application/json")
     @POST("graphql")

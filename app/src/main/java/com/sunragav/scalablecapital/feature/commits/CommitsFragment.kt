@@ -3,6 +3,7 @@ package com.sunragav.scalablecapital.feature.commits
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -10,50 +11,50 @@ import com.sunragav.scalablecapital.R
 import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
 import com.sunragav.scalablecapital.databinding.FragmentSecondBinding
 import com.sunragav.scalablecapital.feature.commits.adapter.CommitsAdapter
-import com.sunragav.scalablecapital.repository.remote.model.Commit
+import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
+import com.sunragav.scalablecapital.presenter.commits.CommitsViewModel
+import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 @InternalCoroutinesApi
-class CommitsFragment : BaseRecyclerViewFragment<Commit>() {
+class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
+    @Inject
+    lateinit var viewModelFactory: CommitsViewModel.Factory
+    private val commitsViewModel: CommitsViewModel by viewModels(factoryProducer = { viewModelFactory })
     private val args: CommitsFragmentArgs by navArgs()
-    override val listAdapter = CommitsAdapter()
+    override val listAdapter = CommitsAdapter(GitHubViewModelTransformer())
     private lateinit var binding: FragmentSecondBinding
+
     override fun setupViewModel() {
-        viewModel.commitsList.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                it.collectLatest {
-                    Timber.d("Adapter updated with new items")
-                    listAdapter.submitData(it)
-                }
-            }
-        }
-        viewModel.repoData.postValue(args.repoData)
-        viewModel.title.postValue(
+        activityViewModel.title.postValue(
             resources.getString(
                 R.string.commits_fragment_label,
-                args.repoData.repoName
+                args.repoName
             )
         )
-        viewModel.commitsCountLiveData.observe(viewLifecycleOwner) { commitsCountData ->
-            commitsCountData.commitsCountMap[1]?.let {
-                if (commitsCountData.maxCommit != 0) {
-                    binding.commitsCountView.render(
-                        it.commitsCount,
-                        commitsCountData.maxCommit,
-                        it.month
-                    )
+        with(commitsViewModel) {
+            commitsList.observe(viewLifecycleOwner) {
+                lifecycleScope.launch {
+                    it.collectLatest {
+                        listAdapter.submitData(it)
+                    }
                 }
+            }
+            triggerCommitsLoad.postValue(args.repoName)
+
+            commitsCountLiveData.observe(viewLifecycleOwner) { commitsCountData ->
+                binding.commitsCountView.update(commitsCountData)
             }
         }
     }
 
-    override fun getViewBinding(
+    override fun getViewBindingAndRecyclerView(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): Pair<FragmentSecondBinding, RecyclerView> {

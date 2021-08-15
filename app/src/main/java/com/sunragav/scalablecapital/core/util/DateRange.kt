@@ -16,8 +16,8 @@ class DateRange(private val month: Date) {
     fun getDateRangeForMonth(month: String): DateRangeForMonth {
         return DateRangeForMonth(
             month, Pair(
-                dateFormater.format(getDate(START)),
-                dateFormater.format(getDate(END))
+                dateFormatter.format(getDate(START)),
+                dateFormatter.format(getDate(END))
             )
         )
     }
@@ -27,11 +27,18 @@ class DateRange(private val month: Date) {
         set(
             Calendar.DAY_OF_MONTH,
             when (rangeConstraint) {
-                START -> getActualMinimum(Calendar.DAY_OF_MONTH)
+                START -> {
+                    getActualMinimum(Calendar.DAY_OF_MONTH)
+                }
                 else -> getActualMaximum(Calendar.DAY_OF_MONTH)
             }
         )
-        setTimeToBeginningOfDay()
+        when (rangeConstraint) {
+            START -> {
+                setTimeToBeginningOfDay()
+            }
+            else -> setTimeToEndOfDay()
+        }
     }.time
 
     private fun Calendar.setTimeToBeginningOfDay() {
@@ -41,16 +48,23 @@ class DateRange(private val month: Date) {
         set(Calendar.MILLISECOND, 0)
     }
 
+    private fun Calendar.setTimeToEndOfDay() {
+        set(Calendar.HOUR_OF_DAY, 23)
+        set(Calendar.MINUTE, 59)
+        set(Calendar.SECOND, 59)
+        set(Calendar.MILLISECOND, 999)
+    }
+
     companion object {
         private const val DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
         private const val TIME = "T00:00:00Z"
 
-        private val dateFormater = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", ENGLISH)
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", ENGLISH)
         private val monthFormat = SimpleDateFormat("MMMM", ENGLISH)
 
-        fun getDateRangesForYear(createdYear: String, createdMonth: Int) =
-            (createdMonth..12)
+        fun getDateRangesForYear(createdYear: String, startMonth: Int, endMonth: Int) =
+            (startMonth..endMonth)
                 .map { it.toString().padStart(2, '0') }
                 .mapNotNull { month ->
                     SimpleDateFormat(

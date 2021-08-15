@@ -26,15 +26,11 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
                 val body = response.body() ?: emptyList()
                 val data = mutableListOf<T>()
                 data.addAll(body)
-                val page = LoadResult.Page(
+                LoadResult.Page(
                     data = data,
                     prevKey = null,
                     nextKey = if (data.isNotEmpty()) nextPage + 1 else null
                 )
-                val allUnique = page.data.size == page.data.map { it.identifier }.toSet().size
-                Timber.d("page:%d: allunique=%s ids:[%s]", nextPage, allUnique,
-                    page.data.joinToString(separator = ",") { it.identifier })
-                page
             } else {
                 val msg = response.errorBody()?.string()
                 val errorMsg = if (msg.isNullOrEmpty()) {

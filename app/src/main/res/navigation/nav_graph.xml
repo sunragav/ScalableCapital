@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.sunragav.scalablecapital.feature.home.ReposFragment"
+        android:name="com.sunragav.scalablecapital.feature.repos.ReposFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -21,12 +21,12 @@
         tools:layout="@layout/fragment_second">
         <deepLink
             android:autoVerify="true"
-            app:uri="scalablecapital://commits/{repoData}" />
+            app:uri="scalablecapital://commits/{repoName}" />
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
         <argument
-            android:name="repoData"
-            app:argType="com.sunragav.scalablecapital.repository.async.commits.RepoData" />
+            android:name="repoName"
+            app:argType="string" />
     </fragment>
 </navigation>

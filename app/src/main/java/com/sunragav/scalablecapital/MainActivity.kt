@@ -9,20 +9,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.sunragav.scalablecapital.databinding.ActivityMainBinding
 import com.sunragav.scalablecapital.presenter.HomeViewModel
-import dagger.android.AndroidInjection
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    @Inject
-    lateinit var factory: HomeViewModel.Factory
-    private val viewModel: HomeViewModel by viewModels(factoryProducer = { factory })
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

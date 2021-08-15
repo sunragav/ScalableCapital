@@ -6,5 +6,11 @@
     <string name="commits_fragment_label">Commits for %s</string>
 
     <string name="avatar_of_the_owner">Avatar of the owner</string>
-    <string name="commits">%d Commits</string>
+    <plurals name="commits">
+        <item quantity="one">1 Commit</item>
+        <item quantity="other">%d Commits</item>
+    </plurals>
+    <string name="error_message">Something went wrong during network call. Please check your connection and try again.</string>
+    <string name="retry">Retry</string>
+    <string name="commits_count_bar">Image view for commits cout bar</string>
 </resources>

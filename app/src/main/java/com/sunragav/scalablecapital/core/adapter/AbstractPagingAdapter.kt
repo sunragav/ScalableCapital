@@ -44,5 +44,4 @@ abstract class AbstractPagingAdapter<T : GitHubModel> :
 
         override fun getChangePayload(oldItem: T, newItem: T): Any = Any()
     }
-
 }

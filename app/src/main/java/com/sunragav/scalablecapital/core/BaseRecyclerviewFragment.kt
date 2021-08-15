@@ -11,18 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
+import com.sunragav.scalablecapital.core.adapter.GitHubLoadStateAdapter
 import com.sunragav.scalablecapital.presenter.HomeViewModel
 import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
 
 abstract class BaseRecyclerViewFragment<T : GitHubModel> : Fragment() {
-    @Inject
-    lateinit var factory: HomeViewModel.Factory
-    protected val viewModel: HomeViewModel by activityViewModels(factoryProducer = { factory })
+    protected val activityViewModel: HomeViewModel by activityViewModels()
 
     protected abstract val listAdapter: AbstractPagingAdapter<T>
 
+    private lateinit var recyclerView: RecyclerView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -35,16 +34,27 @@ abstract class BaseRecyclerViewFragment<T : GitHubModel> : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val (binding, recyclerView) = getViewBinding(inflater, container)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter
-        }
-        setupViewModel()
+        val (binding, recyclerView) = getViewBindingAndRecyclerView(inflater, container)
+        this.recyclerView = recyclerView
         return binding.root
     }
 
-    abstract fun getViewBinding(
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+        setupViewModel()
+    }
+
+    open fun setupView() {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = listAdapter.withLoadStateFooter(
+                footer = GitHubLoadStateAdapter { listAdapter.retry() }
+            )
+        }
+    }
+
+    abstract fun getViewBindingAndRecyclerView(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): Pair<ViewBinding, RecyclerView>

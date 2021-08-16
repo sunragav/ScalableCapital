@@ -1,4 +1,4 @@
-package com.sunragav.scalablecapital.feature.commits.transformer
+package com.sunragav.scalablecapital.presenter.transformer
 
 import com.sunragav.scalablecapital.core.util.DateRange.Companion.dateFormatter
 import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse

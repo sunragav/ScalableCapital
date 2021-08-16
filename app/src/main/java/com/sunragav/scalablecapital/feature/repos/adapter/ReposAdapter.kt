@@ -8,9 +8,9 @@ import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.RepoListItemBinding
 import com.sunragav.scalablecapital.feature.commits.repository.remote.helpers.RepoCommitData
-import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
 import com.sunragav.scalablecapital.feature.repos.ReposFragmentDirections
 import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
+import com.sunragav.scalablecapital.presenter.transformer.GitHubViewModelTransformer
 
 
 class ReposAdapter(private val modelTransformer: GitHubViewModelTransformer) :

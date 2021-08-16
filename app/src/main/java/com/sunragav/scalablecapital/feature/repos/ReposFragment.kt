@@ -14,10 +14,10 @@ import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
 import com.sunragav.scalablecapital.core.util.hide
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.FragmentFirstBinding
-import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
 import com.sunragav.scalablecapital.feature.repos.adapter.ReposAdapter
 import com.sunragav.scalablecapital.feature.repos.presenter.ReposViewModel
 import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
+import com.sunragav.scalablecapital.presenter.transformer.GitHubViewModelTransformer
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

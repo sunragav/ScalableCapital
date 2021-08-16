@@ -6,7 +6,7 @@ import com.sunragav.scalablecapital.app.GlideApp.with
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
 import com.sunragav.scalablecapital.databinding.RepoListItemBinding
 import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
-import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
+import com.sunragav.scalablecapital.presenter.transformer.GitHubViewModelTransformer
 
 class CommitsAdapter(private val modelTransformer: GitHubViewModelTransformer) :
     AbstractPagingAdapter<CommitResponse>() {

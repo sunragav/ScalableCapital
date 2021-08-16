@@ -69,57 +69,63 @@ There are 3 graphql queries used in the CommitsCountHelper:
 
 1. Query 1 used for fetching the most recent commit cursor hash, it's date and the totalNumber of commits in a repo.
 
->` query {
->      repository(owner:"%s", name:"%s") {
->        object(expression:"%s") {
->          ... on Commit {
->            history(first:1) {
->              nodes {
->                committedDate
->               }
->              totalCount
->              pageInfo {
->                endCursor
->              }
->            }
->          }
->        }
->      }
->    }`
+```javascript
+query {
+     repository(owner:"%s", name:"%s") {
+       object(expression:"%s") {
+         ... on Commit {
+           history(first:1) {
+             nodes {
+               committedDate
+              }
+             totalCount
+             pageInfo {
+               endCursor
+             }
+           }
+         }
+       }
+     }
+   }
+```
 
 2. Query 2 used for fetching the date of the very first commit of the repo.
 
->`query {
->      repository(owner:"%s", name:"%s") {
->        object(expression:"%s") {
->          ... on Commit {
->            history(first:1,after: "%s %d") {
->              nodes {
->                committedDate
->               }
->              totalCount
->              pageInfo {
->                endCursor
->              }
->            }
->          }
->        }
->      }
->    }`
+```javascript
+query {
+     repository(owner:"%s", name:"%s") {
+       object(expression:"%s") {
+         ... on Commit {
+           history(first:1,after: "%s %d") {
+             nodes {
+               committedDate
+              }
+             totalCount
+             pageInfo {
+               endCursor
+             }
+           }
+         }
+       }
+     }
+   }
+ ```
 
 3. Query 3 is used to fetch the commits count per month
 
->`query {
->      repository(owner:"%s", name:"%s") {
->        object(expression:"%s") {
->          ... on Commit {
->            history(since:"%s",until:"%s") {
->              totalCount
->            }
->          }
->        }
->      }
->    }`
+```javascript
+query {
+     repository(owner:"%s", name:"%s") {
+       object(expression:"%s") {
+         ... on Commit {
+           history(since:"%s",until:"%s") {
+             totalCount
+           }
+         }
+       }
+     }
+   }
+```
 
 The dates of the first and last commits in a repo are fetched and a list of months in between  
 those dates are calculated. The date ranges for each month are used to query the commits count per month.
@@ -155,19 +161,43 @@ Other than the graph ql api which is used for calling 3 different queries,
 there are 2 rest api calls used.
 1. Rest Api call 1 for fetching the repositories list for a given username
 2. Rest Api call 2 for fetching the commits list for the selected repo
+```java
+interface RepoService {
+    @GET("users/{owner}/repos")
+    suspend fun getRepos(
+        @Path("owner") owner: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<List<RepoResponse>>
 
+    @GET("repos/{owner}/{name}/commits")
+    suspend fun getCommits(
+        @Path("owner") owner: String,
+        @Path("name") name: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<List<CommitResponse>>
+
+    @Headers("Content-Type: application/json")
+    @POST("graphql")
+    suspend fun postDynamicQuery(
+        @Body body: String
+    ): Response<CommitsResponse>
+}
+```
 There are 3 view models(ViewModel from jetpack components) used.
 1. Activity scoped HomeViewModel which has a livedata to notify the title change of the ActionBar on entering the commits fragment.
 2. CommitsFragment scoped CommitsViewModel exposes 1 mutable live data and 2 livedatas for suscription
 
->`@GET("repos/{owner}/{name}/commits")
->    suspend fun getCommits(
->        @Path("owner") owner: String,
->        @Path("name") name: String,
->        @Query("page") page: Int,
->        @Query("per_page") perPage: Int
->    ): Response<List<CommitResponse>>
->`
+```java
+@GET("repos/{owner}/{name}/commits")
+   suspend fun getCommits(
+       @Path("owner") owner: String,
+       @Path("name") name: String,
+       @Query("page") page: Int,
+       @Query("per_page") perPage: Int
+   ): Response<List<CommitResponse>>
+```
 
 1 mutable livedata for notify the repo name selected in the repos fragment
 
@@ -177,14 +207,14 @@ another for notifying the CommitsCountView once the processing of the commits co
 
 3. ReposFragment scoped ReposViewModel exposes 1 livedata for notifying the repos list adapter of the page loaded, once the repos REST api call succeeds
 
->`
->@GET("users/{owner}/repos")
->    suspend fun getRepos(
->        @Path("owner") owner: String,
->        @Query("page") page: Int,
->        @Query("per_page") perPage: Int
->    ): Response<List<RepoResponse>>
->`
+```java
+@GET("users/{owner}/repos")
+   suspend fun getRepos(
+       @Path("owner") owner: String,
+       @Query("page") page: Int,
+       @Query("per_page") perPage: Int
+   ): Response<List<RepoResponse>>
+```
 
 The project's package structure is divided in to 2 features,
 

@@ -2,13 +2,19 @@
 An App that displays github repos
 
 Following properties in the gradle.properties can be manipulated.
-debugOwner=mralexgray
-prodOwner=mralexgray
-debugAuth=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
-prodAuth=<ENTER YOUR GITHUB PERSONALIZED ACCESS TOKEN>
-authPrefix=token
+
+* debugOwner=mralexgray
+
+* prodOwner=mralexgray
+
+* debugAuth=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
+
+* prodAuth=<ENTER YOUR GITHUB PERSONALIZED ACCESS TOKEN>
+  
+* authPrefix=token
 
 In case of network error, api error or an empty result for the api request, a custom empty view is displayed.
+
 The empty view shows a sequence of jokes on git and software development in general.
 
 You may provide wrong values here to test whether the error states are handled in the app.
@@ -19,7 +25,9 @@ Usage of each property in the gradle.properties:
 
 - Use "debugAuth" for providing your own GITHUB personal access token, if any.
 
-There is limit imposed by Github on the number of calls made without authorization. By using a personal access token, we are allowed to make up to 5000 calls per hour.  
+There is limit imposed by Github on the number of calls made without authorization. 
+  
+By using a personal access token, we are allowed to make up to 5000 calls per hour.  
 To learn how to create a personal access token, please refer this [page](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 - Use "debugOwner" for providing your GITHUB handle(username).
@@ -28,20 +36,33 @@ prodAuth and prodOwner does the same thing for the release flavor.
 
 - Use debugBaseUrl for providing the base url of the API
 You can replace it with a mock server url, just in case, if you want to.
+  
 prodBaseUrl is used for release flavor.
+  
 eg.
 prodBaseUrl=https://api.github.com/
-debugBaseUrl=https://api.github.com/
-
-Postman mockserver except for graqphql, mocks the rest calls for repos and commits list view
+  
 debugBaseUrl=https://7ff3d38f-cc5f-4625-a9e6-b8024bfdf7d2.mock.pstmn.io
+  
+Postman mockserver except for graqphql, mocks the rest calls for repos and commits list view
+
 
 The project uses a simple MVVM architecture using the jetpack components.
-The project has a single gradle app module.
-Due to the time constraint, I have not added any tests or complex architecture layers. The project does not use any local db.
+  
+The project is a single gradle android module.
+  
+Due to the time constraint, I have not added any tests or complex architecture layers. 
+  
+The project does not use any local db.
 
 The paging is handled using the paging library 3.0
+
+App states are maintained in the Jetpack component's viewmodel, so that they survive the configuration changes out of the box.
+
+The dependecy injection is achieved using dagger 2.0
+  
 Service calls are made using the retrofit library.
+  
 As Apollo graphql library is not mentioned in the Test assignment description, I have used retrofit to call the graphql calls as well.
 
 There are 3 graphql queries used in the CommitsCountHelper:

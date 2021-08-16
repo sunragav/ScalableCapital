@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.sunragav.scalablecapital.core.util.DateRange.Companion.getDateRangesForYear
 import com.sunragav.scalablecapital.feature.commits.repository.remote.models.graphql.HistoryObject
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -132,21 +132,22 @@ class CommitsCountHelper(
                 cursor = history.pageInfo?.endCursor?.split(" ")?.get(0) ?: ""
             }
         }
-        if (repo.lastCommitDate.isBlank() || cursor.isBlank() || totalCommits == 0) {
+        if (repo.lastCommitDate.isNotBlank() && cursor.isNotBlank() && totalCommits != 0) {
+            if (totalCommits == 1) {
+                repo = repo.copy(firstCommitDate = repo.lastCommitDate)
+                Timber.d("Graph QL Only one commit in this repository")
+            } else {
+                fetchFirstCommitDate(cursor, totalCommits)
+            }
+        } else {
             Timber.d(
                 "Graph QL query failed or git repo is empty (totalCommitsCount=%d)",
                 totalCommits
             )
         }
-        if (totalCommits == 1) {
-            repo = repo.copy(firstCommitDate = repo.lastCommitDate)
-            Timber.d("Graph QL Only one commit in this repository")
-        } else {
-            firstCommitDate(cursor, totalCommits)
-        }
     }
 
-    private suspend fun firstCommitDate(
+    private suspend fun fetchFirstCommitDate(
         cursor: String,
         totalCommits: Int
     ) {

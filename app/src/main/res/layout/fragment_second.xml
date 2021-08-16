@@ -30,6 +30,7 @@
     <com.sunragav.scalablecapital.feature.commits.customviews.EmptyCommitsView
         android:id="@+id/emptyView"
         app:totalImages="4"
+        app:errorMsg="@string/empty_commits_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />

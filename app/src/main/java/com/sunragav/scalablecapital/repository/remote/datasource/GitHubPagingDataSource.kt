@@ -1,4 +1,4 @@
-package com.sunragav.scalablecapital.repository.datasource
+package com.sunragav.scalablecapital.repository.remote.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -19,18 +19,22 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         return try {
             // Start refresh at page 1 if undefined.
-            val nextPage = params.key ?: 1
-            Timber.d("Service call for page:%d", nextPage)
-            val response = serviceCall(nextPage, params.loadSize)
+            val currentPage = params.key ?: 1
+            Timber.d("Service call for page:%d", currentPage)
+            val response = serviceCall(currentPage, params.loadSize)
             if (response.isSuccessful) {
                 val body = response.body() ?: emptyList()
-                val data = mutableListOf<T>()
-                data.addAll(body)
-                LoadResult.Page(
-                    data = data,
-                    prevKey = null,
-                    nextKey = if (data.isNotEmpty()) nextPage + 1 else null
-                )
+                if (currentPage == 1 && body.isEmpty()) {
+                    LoadResult.Error(java.lang.Exception(EMPTY_REPO))
+                } else {
+                    val data = mutableListOf<T>()
+                    data.addAll(body)
+                    LoadResult.Page(
+                        data = data,
+                        prevKey = null,
+                        nextKey = if (data.isNotEmpty()) currentPage + 1 else null
+                    )
+                }
             } else {
                 val msg = response.errorBody()?.string()
                 val errorMsg = if (msg.isNullOrEmpty()) {
@@ -50,5 +54,6 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
 
     companion object {
         const val PAGE_SIZE = 5
+        const val EMPTY_REPO = "Empty"
     }
 }

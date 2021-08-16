@@ -1,8 +1,8 @@
-package com.sunragav.scalablecapital.repository.datasource.commits
+package com.sunragav.scalablecapital.feature.commits.repository.remote.datasource
 
-import com.sunragav.scalablecapital.repository.datasource.GitHubPagingDataSource
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
-import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
+import com.sunragav.scalablecapital.repository.remote.datasource.GitHubPagingDataSource
 
 class CommitsDataSource(
     private val repoService: RepoService,

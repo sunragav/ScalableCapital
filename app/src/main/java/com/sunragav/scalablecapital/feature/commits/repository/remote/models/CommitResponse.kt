@@ -1,4 +1,6 @@
-package com.sunragav.scalablecapital.repository.remote.model
+package com.sunragav.scalablecapital.feature.commits.repository.remote.models
+
+import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 
 data class CommitResponse(
     val sha: String,

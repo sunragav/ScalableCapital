@@ -12,7 +12,7 @@ import com.sunragav.scalablecapital.R.styleable.AnimatableRectangleView
 import com.sunragav.scalablecapital.core.util.hide
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.CommitsViewBinding
-import com.sunragav.scalablecapital.repository.async.commits.CommitsCountData
+import com.sunragav.scalablecapital.feature.commits.repository.remote.helpers.CommitsCountOutputData
 
 
 @SuppressLint("CustomViewStyleable")
@@ -22,7 +22,7 @@ class CommitsCountView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var binding = CommitsViewBinding.inflate(LayoutInflater.from(context), this, true)
-    private lateinit var _commitsCountData: CommitsCountData
+    private lateinit var _commitsCountOutputData: CommitsCountOutputData
     private var currentIndex = 0
     private var imageHeightPercentage = 0f
     private var displayYear = false
@@ -35,9 +35,9 @@ class CommitsCountView @JvmOverloads constructor(
         attributes.recycle()
     }
 
-    fun update(commitsCountData: CommitsCountData) {
+    fun update(commitsCountOutputData: CommitsCountOutputData) {
         binding.progressBar.hide()
-        if (!commitsCountData.valid) {
+        if (!commitsCountOutputData.valid) {
             hide()
         } else {
             show()
@@ -46,17 +46,17 @@ class CommitsCountView @JvmOverloads constructor(
 
             binding.ivBar.layoutParams.height = 0
             currentIndex = 0
-            _commitsCountData = commitsCountData
-            if (currentIndex < _commitsCountData.commitsCountList.size) {
+            _commitsCountOutputData = commitsCountOutputData
+            if (currentIndex < _commitsCountOutputData.commitsCountList.size) {
                 render()
             }
         }
     }
 
     fun render() {
-        val maxCommitCount = _commitsCountData.maxCommit
+        val maxCommitCount = _commitsCountOutputData.maxCommit
         val height: Int
-        _commitsCountData.commitsCountList[currentIndex].run {
+        _commitsCountOutputData.commitsCountList[currentIndex].run {
             binding.tvMonth.text = month
             binding.tvYear.text = year
             binding.tvCommits.text =
@@ -83,7 +83,7 @@ class CommitsCountView @JvmOverloads constructor(
 
             override fun onAnimationEnd(p0: Animator?) {
                 currentIndex++
-                if (currentIndex < _commitsCountData.commitsCountList.size) {
+                if (currentIndex < _commitsCountOutputData.commitsCountList.size) {
                     render()
                 }
             }

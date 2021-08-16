@@ -1,8 +1,7 @@
 package com.sunragav.scalablecapital.app.di
 
-import com.squareup.moshi.Moshi
-import com.sunragav.scalablecapital.presenter.commits.CommitsViewModel
-import com.sunragav.scalablecapital.presenter.repos.ReposViewModel
+import com.sunragav.scalablecapital.feature.commits.presenter.CommitsViewModel
+import com.sunragav.scalablecapital.feature.repos.presenter.ReposViewModel
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
 import dagger.Module
 import dagger.Provides
@@ -18,7 +17,6 @@ class PresentationModule {
     @Provides
     fun provideCommitsViewModelFactory(
         repoService: RepoService,
-        moshi: Moshi,
         @Owner owner: String
-    ) = CommitsViewModel.Factory(repoService, moshi, owner)
+    ) = CommitsViewModel.Factory(repoService, owner)
 }

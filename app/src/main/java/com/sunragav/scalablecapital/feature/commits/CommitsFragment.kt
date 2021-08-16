@@ -15,9 +15,9 @@ import com.sunragav.scalablecapital.core.util.hide
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.FragmentSecondBinding
 import com.sunragav.scalablecapital.feature.commits.adapter.CommitsAdapter
+import com.sunragav.scalablecapital.feature.commits.presenter.CommitsViewModel
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
 import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
-import com.sunragav.scalablecapital.presenter.commits.CommitsViewModel
-import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

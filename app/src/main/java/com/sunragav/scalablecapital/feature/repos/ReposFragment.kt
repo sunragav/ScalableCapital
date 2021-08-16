@@ -8,13 +8,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import com.sunragav.scalablecapital.app.di.Owner
 import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
+import com.sunragav.scalablecapital.core.util.hide
+import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.FragmentFirstBinding
 import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
 import com.sunragav.scalablecapital.feature.repos.adapter.ReposAdapter
-import com.sunragav.scalablecapital.presenter.repos.ReposViewModel
-import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
+import com.sunragav.scalablecapital.feature.repos.presenter.ReposViewModel
+import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -28,8 +31,12 @@ import javax.inject.Inject
 class ReposFragment : BaseRecyclerViewFragment<RepoResponse>() {
     @Inject
     lateinit var viewModelFactory: ReposViewModel.Factory
-    private val reposViewModel: ReposViewModel by viewModels(factoryProducer = { viewModelFactory })
 
+    @Inject
+    @Owner
+    lateinit var user: String
+    private val reposViewModel: ReposViewModel by viewModels(factoryProducer = { viewModelFactory })
+    private lateinit var binding: FragmentFirstBinding
     override fun setupViewModel() {
         lifecycleScope.launch {
             reposViewModel.repoList.collect {
@@ -46,7 +53,7 @@ class ReposFragment : BaseRecyclerViewFragment<RepoResponse>() {
         inflater: LayoutInflater,
         container: ViewGroup?
     ): Pair<FragmentFirstBinding, RecyclerView> {
-        val binding = FragmentFirstBinding.inflate(inflater, container, false)
+        binding = FragmentFirstBinding.inflate(inflater, container, false)
         return Pair(binding, binding.rvRepo)
     }
 
@@ -58,7 +65,13 @@ class ReposFragment : BaseRecyclerViewFragment<RepoResponse>() {
             else -> null
         }
         errorState?.let {
-
+            binding.emptyView.start(login = user)
+            binding.rvRepo.hide()
+        } ?: run {
+            if (loadState.refresh !is LoadState.Loading) {
+                binding.emptyView.stop()
+                binding.rvRepo.show()
+            }
         }
     }
 }

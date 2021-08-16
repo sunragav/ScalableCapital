@@ -7,12 +7,13 @@ import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import com.sunragav.scalablecapital.R
+import com.sunragav.scalablecapital.app.GlideApp
 import com.sunragav.scalablecapital.core.util.hide
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.EmptyCommitsViewBinding
 import timber.log.Timber
+import kotlin.random.Random
 
 
 @SuppressLint("CustomViewStyleable")
@@ -22,16 +23,17 @@ class EmptyCommitsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var continueAnim = false
+    private var errorMsg = ""
     private var binding = EmptyCommitsViewBinding.inflate(LayoutInflater.from(context), this, true)
-    private var imageNum = 1
+    private var imageNum = 0
     private var totalImages = 0
     private val fadeIn: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_in)
     private val fadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_out)
 
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.EmptyCommitsView)
-        totalImages =
-            attributes.getInt(R.styleable.EmptyCommitsView_totalImages, 0)
+        totalImages = attributes.getInt(R.styleable.EmptyCommitsView_totalImages, 0)
+        errorMsg = attributes.getString(R.styleable.EmptyCommitsView_errorMsg) ?: ""
         attributes.recycle()
     }
 
@@ -39,7 +41,7 @@ class EmptyCommitsView @JvmOverloads constructor(
         binding.ivFunny.startAnimation(fadeOut)
         fadeOut.onAnimEnded {
             imageNum++
-            if (imageNum > totalImages) imageNum = 1
+            if (imageNum >= totalImages) imageNum = 0
             loadImage()
             binding.ivFunny.startAnimation(fadeIn)
             fadeIn.onAnimEnded {
@@ -49,16 +51,11 @@ class EmptyCommitsView @JvmOverloads constructor(
     }
 
     private fun loadImage() {
-        val imageUri = "@drawable/${resources.getString(R.string.empty_img_prefix, imageNum)}"
-        val imageResource = resources.getIdentifier(imageUri, null, context.packageName)
-
-        Timber.d(
-            "Loading image:%s pkg:%s imageRes:%d",
-            imageUri,
-            context.packageName,
-            imageResource
-        )
-        binding.ivFunny.setImageDrawable(ContextCompat.getDrawable(context, imageResource))
+        val imageUri = resources.getStringArray(R.array.empty_img_urls)[imageNum]
+        Timber.d("Loading image:%s", imageUri)
+        GlideApp.with(context)
+            .load(imageUri)
+            .into(binding.ivFunny)
     }
 
     private fun Animation.onAnimEnded(perform: () -> Unit) {
@@ -75,19 +72,19 @@ class EmptyCommitsView @JvmOverloads constructor(
 
     }
 
-    fun start() {
+    fun start(login: String? = null) {
         show()
+        imageNum = Random.nextInt(0, totalImages)
         loadImage()
+        binding.tvEmpty.text = login?.let { String.format(errorMsg, it) } ?: errorMsg
         continueAnim = true
         render()
     }
 
     fun stop() {
         continueAnim = false
+        fadeIn.cancel()
+        fadeOut.cancel()
         hide()
-    }
-
-    companion object {
-        const val ASSET_LOC = "file:///android_asset/%s"
     }
 }

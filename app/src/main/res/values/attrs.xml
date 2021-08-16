@@ -6,5 +6,7 @@
     </declare-styleable>
     <declare-styleable name="EmptyCommitsView">
         <attr name="totalImages" format="integer" />
+        <attr name="errorMsg" format="reference" />
+        <attr name="login" format="reference" />
     </declare-styleable>
 </resources>

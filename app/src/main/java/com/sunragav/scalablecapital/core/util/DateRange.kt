@@ -1,6 +1,5 @@
 package com.sunragav.scalablecapital.core.util
 
-import com.sunragav.scalablecapital.core.util.DateRange.Companion.getMonthName
 import com.sunragav.scalablecapital.core.util.RangeConstraint.END
 import com.sunragav.scalablecapital.core.util.RangeConstraint.START
 import java.text.SimpleDateFormat
@@ -12,6 +11,7 @@ enum class RangeConstraint {
 }
 
 data class DateRangeForMonth(val month: String, val dateRange: Pair<String, String>)
+
 class DateRange(private val month: Date) {
     fun getDateRangeForMonth(month: String): DateRangeForMonth {
         return DateRangeForMonth(
@@ -63,7 +63,13 @@ class DateRange(private val month: Date) {
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", ENGLISH)
         private val monthFormat = SimpleDateFormat("MMMM", ENGLISH)
 
-        fun getDateRangesForYear(createdYear: String, startMonth: Int, endMonth: Int) =
+        /***
+         *
+         * @param createdYear year as 4 digits integer
+         * @param startMonth month (between 1 to 12) as integer
+         * @param endMonth month (between 1 to 12) as integer
+         */
+        fun getDateRangesForYear(createdYear: Int, startMonth: Int, endMonth: Int) =
             (startMonth..endMonth)
                 .map { it.toString().padStart(2, '0') }
                 .mapNotNull { month ->
@@ -75,26 +81,11 @@ class DateRange(private val month: Date) {
                     }
                 }
 
-        fun getMonthName(month: Int): String {
+        private fun getMonthName(month: Int): String {
             val calendar = GregorianCalendar()
             calendar[Calendar.DAY_OF_MONTH] = 1
             calendar[Calendar.MONTH] = month - 1
             return monthFormat.format(calendar.time)
         }
     }
-}
-
-// Testing the usage
-fun main() {
-    (1..12)
-        .map { it.toString().padStart(2, '0') }
-        .map { month ->
-            SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                ENGLISH
-            ).parse("2019-$month-01T00:00:00Z")?.let { date ->
-                DateRange(date).getDateRangeForMonth(getMonthName(month = month.toInt()))
-            }
-        }
-        .forEach(::println)
 }

@@ -3,14 +3,14 @@ package com.sunragav.scalablecapital.feature.repos.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import com.bumptech.glide.Glide
+import com.sunragav.scalablecapital.app.GlideApp
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
 import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.RepoListItemBinding
+import com.sunragav.scalablecapital.feature.commits.repository.remote.helpers.RepoCommitData
 import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
 import com.sunragav.scalablecapital.feature.repos.ReposFragmentDirections
-import com.sunragav.scalablecapital.repository.async.commits.RepoData
-import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
+import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
 
 
 class ReposAdapter(private val modelTransformer: GitHubViewModelTransformer) :
@@ -31,7 +31,7 @@ class ReposAdapter(private val modelTransformer: GitHubViewModelTransformer) :
     }
 
     private fun RepoResponse.bindModel() {
-        Glide.with(binding.root.context)
+        GlideApp.with(binding.root.context)
             .load(owner.avatar_url)
             .into(binding.imgAvatar)
         binding.tvDescription.text = description
@@ -45,7 +45,7 @@ class ReposAdapter(private val modelTransformer: GitHubViewModelTransformer) :
             if (name.isNotBlank() && default_branch?.isNotBlank() == true) {
                 view.findNavController().navigate(
                     ReposFragmentDirections.actionFirstFragmentToSecondFragment(
-                        RepoData(
+                        RepoCommitData(
                             repoName = name,
                             defaultBranch = default_branch,
                             firstCommitDate = "",

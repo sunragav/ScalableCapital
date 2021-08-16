@@ -1,4 +1,4 @@
-package com.sunragav.scalablecapital.presenter.repos
+package com.sunragav.scalablecapital.feature.repos.presenter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,10 +7,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.sunragav.scalablecapital.repository.datasource.GitHubPagingDataSource.Companion.PAGE_SIZE
-import com.sunragav.scalablecapital.repository.datasource.home.RepoDataSource
+import com.sunragav.scalablecapital.feature.repos.repository.remote.datasource.RepoDataSource
+import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
-import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
+import com.sunragav.scalablecapital.repository.remote.datasource.GitHubPagingDataSource.Companion.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 
 class ReposViewModel(

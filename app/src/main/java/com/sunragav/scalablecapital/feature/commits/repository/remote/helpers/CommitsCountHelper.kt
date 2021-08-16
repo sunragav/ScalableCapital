@@ -1,24 +1,22 @@
-package com.sunragav.scalablecapital.repository.async.commits
+package com.sunragav.scalablecapital.feature.commits.repository.remote.helpers
 
 import android.os.Parcelable
-import com.squareup.moshi.Moshi
 import com.sunragav.scalablecapital.core.util.DateRange.Companion.getDateRangesForYear
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.graphql.HistoryObject
 import com.sunragav.scalablecapital.repository.remote.api.RepoService
-import com.sunragav.scalablecapital.repository.remote.model.graphql.CommitsResponse
-import com.sunragav.scalablecapital.repository.remote.model.graphql.HistoryObject
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
 import timber.log.Timber
 
 @Parcelize
-data class RepoData(
+data class RepoCommitData(
     val repoName: String,
     val defaultBranch: String,
     val firstCommitDate: String,
     val lastCommitDate: String
 ) : Parcelable
 
-data class CommitsCountData(
+data class CommitsCountOutputData(
     val commitsCountList: List<CommitsCountViewData>,
     val maxCommit: Int,
     val valid: Boolean = true
@@ -28,22 +26,21 @@ data class CommitsCountViewData(val month: String, val year: String, val commits
 
 class CommitsCountHelper(
     private val repoService: RepoService,
-    private val moshi: Moshi,
     private val user: String,
-    repoData: RepoData
+    repoCommitData: RepoCommitData
 ) {
-    private var repo = RepoData(
-        repoName = repoData.repoName,
-        defaultBranch = repoData.defaultBranch,
+    private var repo = RepoCommitData(
+        repoName = repoCommitData.repoName,
+        defaultBranch = repoCommitData.defaultBranch,
         firstCommitDate = "",
         lastCommitDate = ""
     )
 
-    suspend fun processCommitsCount(): CommitsCountData {
+    suspend fun processCommitsCount(): CommitsCountOutputData {
         getFirstAndLastCommitDate()
         val commitsCountList = mutableListOf<CommitsCountViewData>()
         return if (repo.lastCommitDate.isBlank() || repo.firstCommitDate.isBlank()) {
-            CommitsCountData(
+            CommitsCountOutputData(
                 commitsCountList = commitsCountList,
                 valid = false,
                 maxCommit = 0
@@ -63,7 +60,7 @@ class CommitsCountHelper(
                 val firstMonth = if (year == startYear) createdMonth else 1
                 val lastMonth = if (year == finalYear) updatedMonth else 12
                 getDateRangesForYear(
-                    year.toString(),
+                    year,
                     firstMonth,
                     lastMonth
                 ).forEach { dateRangeWithMonth ->
@@ -93,7 +90,7 @@ class CommitsCountHelper(
                     }
                 }
             }
-            CommitsCountData(
+            CommitsCountOutputData(
                 commitsCountList = commitsCountList,
                 maxCommit = if (count > 0) commitsCountList.maxOf { it.commitsCount } else 0,
                 valid = count > 0)
@@ -108,10 +105,9 @@ class CommitsCountHelper(
         val response = repoService.postDynamicQuery(paramObject.toString())
         if (response.isSuccessful) {
             Timber.d("Graph QL api response: %s", response.body())
-            response.body()?.let { json ->
-                val result = moshi.adapter(CommitsResponse::class.java).fromJson(json)
+            response.body()?.let { result ->
                 Timber.d("Graph QL parsed response: %s", result)
-                result?.data?.repository?.obj?.let {
+                result.data?.repository?.obj?.let {
                     useResponse(it)
                 }
             }

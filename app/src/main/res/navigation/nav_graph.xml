@@ -24,6 +24,6 @@
             app:destination="@id/FirstFragment" />
         <argument
             android:name="repoData"
-            app:argType="com.sunragav.scalablecapital.repository.async.commits.RepoData" />
+            app:argType="com.sunragav.scalablecapital.feature.commits.repository.remote.helpers.RepoCommitData" />
     </fragment>
 </navigation>

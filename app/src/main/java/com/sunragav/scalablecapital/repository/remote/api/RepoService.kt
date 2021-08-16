@@ -1,7 +1,8 @@
 package com.sunragav.scalablecapital.repository.remote.api
 
-import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
-import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.graphql.CommitsResponse
+import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,5 +26,5 @@ interface RepoService {
     @POST("graphql")
     suspend fun postDynamicQuery(
         @Body body: String
-    ): Response<String>
+    ): Response<CommitsResponse>
 }

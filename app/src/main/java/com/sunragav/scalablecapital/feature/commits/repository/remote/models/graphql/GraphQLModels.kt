@@ -1,4 +1,4 @@
-package com.sunragav.scalablecapital.repository.remote.model.graphql
+package com.sunragav.scalablecapital.feature.commits.repository.remote.models.graphql
 
 import com.squareup.moshi.Json
 

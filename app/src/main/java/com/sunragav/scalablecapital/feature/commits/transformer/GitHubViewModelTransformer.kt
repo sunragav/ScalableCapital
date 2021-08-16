@@ -1,8 +1,8 @@
 package com.sunragav.scalablecapital.feature.commits.transformer
 
 import com.sunragav.scalablecapital.core.util.DateRange.Companion.dateFormatter
-import com.sunragav.scalablecapital.repository.remote.model.CommitResponse
-import com.sunragav.scalablecapital.repository.remote.model.RepoResponse
+import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
+import com.sunragav.scalablecapital.feature.repos.repository.remote.models.RepoResponse
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -12,7 +12,8 @@
     <string name="error_message">Something went wrong during network call. Please check your connection and try again.</string>
     <string name="retry">Retry</string>
     <string name="commits_count_bar">Image view for commits count bar</string>
-    <string name="empty_commits_text">Sorry this Repo seems to be empty.\nEnjoy these jokes instead.</string>
+    <string name="empty_commits_text">Sorry \"%s\" is empty.\nEnjoy these jokes instead.</string>
+    <string name="generic_error">Sorry no content.\nEnjoy these jokes instead.</string>
     <string name="empty_repo_text">Sorry \"%s\" has no repos. Enjoy these jokes instead.</string>
     <string name="funny_gif_images">Funny gif images</string>
     <array name="empty_img_urls">

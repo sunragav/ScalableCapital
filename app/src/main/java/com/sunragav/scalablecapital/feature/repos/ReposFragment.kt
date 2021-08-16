@@ -65,7 +65,7 @@ class ReposFragment : BaseRecyclerViewFragment<RepoResponse>() {
             else -> null
         }
         errorState?.let {
-            binding.emptyView.start(login = user)
+            binding.emptyView.start(contextSpecificString = user)
             binding.rvRepo.hide()
         } ?: run {
             if (loadState.refresh !is LoadState.Loading) {

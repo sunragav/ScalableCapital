@@ -24,6 +24,7 @@ class EmptyCommitsView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var continueAnim = false
     private var errorMsg = ""
+    private var genericError = ""
     private var binding = EmptyCommitsViewBinding.inflate(LayoutInflater.from(context), this, true)
     private var imageNum = 0
     private var totalImages = 0
@@ -34,6 +35,7 @@ class EmptyCommitsView @JvmOverloads constructor(
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.EmptyCommitsView)
         totalImages = attributes.getInt(R.styleable.EmptyCommitsView_totalImages, 0)
         errorMsg = attributes.getString(R.styleable.EmptyCommitsView_errorMsg) ?: ""
+        genericError = resources.getString(R.string.generic_error)
         attributes.recycle()
     }
 
@@ -72,11 +74,12 @@ class EmptyCommitsView @JvmOverloads constructor(
 
     }
 
-    fun start(login: String? = null) {
+    fun start(contextSpecificString: String? = null) {
         show()
         imageNum = Random.nextInt(0, totalImages)
         loadImage()
-        binding.tvEmpty.text = login?.let { String.format(errorMsg, it) } ?: errorMsg
+        binding.tvEmpty.text =
+            contextSpecificString?.let { String.format(errorMsg, it) } ?: genericError
         continueAnim = true
         render()
     }

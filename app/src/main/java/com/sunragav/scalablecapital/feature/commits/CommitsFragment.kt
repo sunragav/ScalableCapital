@@ -74,7 +74,7 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
             else -> null
         }
         errorState?.let {
-            binding.emptyView.start()
+            binding.emptyView.start(args.repoData.repoName)
             binding.rvCommits.hide()
             binding.commitsCountView.hide()
         } ?: run {

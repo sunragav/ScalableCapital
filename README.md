@@ -1,6 +1,8 @@
 # ScalableCapital
 An App that displays github repos
 
+[![preview](https://imgur.com/1HLkjSb.jpg)](https://s1.webmshare.com/rE5Xe.webm)
+
 For the sake of simplicity, only the default_branch of a repo is considered for displaying the commits and calculating the per commits count.
 
 Following properties in the gradle.properties can be manipulated.

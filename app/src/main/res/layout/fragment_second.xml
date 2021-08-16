@@ -10,8 +10,8 @@
         android:id="@+id/commitsCountView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        app:imageHeightPercent="0.3"
         app:displayYear="true"
+        app:imageHeightPercent="0.3"
         app:layout_constraintEnd_toStartOf="@+id/rvCommits"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,5 +26,12 @@
         app:layout_constraintTop_toBottomOf="@+id/commitsCountView"
         tools:itemCount="20"
         tools:listitem="@layout/repo_list_item" />
+
+    <com.sunragav.scalablecapital.feature.commits.customviews.EmptyCommitsView
+        android:id="@+id/emptyView"
+        app:totalImages="4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

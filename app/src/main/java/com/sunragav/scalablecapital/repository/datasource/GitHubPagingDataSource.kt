@@ -49,6 +49,6 @@ abstract class GitHubPagingDataSource<T : GitHubModel>(private val serviceCall: 
     }
 
     companion object {
-        const val PAGE_SIZE = 30
+        const val PAGE_SIZE = 5
     }
 }

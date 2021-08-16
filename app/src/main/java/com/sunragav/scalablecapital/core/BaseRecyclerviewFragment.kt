@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.paging.CombinedLoadStates
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -48,11 +49,18 @@ abstract class BaseRecyclerViewFragment<T : GitHubModel> : Fragment() {
     open fun setupView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter.withLoadStateFooter(
-                footer = GitHubLoadStateAdapter { listAdapter.retry() }
-            )
+            adapter = listAdapter.apply {
+                withLoadStateFooter(
+                    footer = GitHubLoadStateAdapter { listAdapter.retry() }
+                )
+                addLoadStateListener { loadState ->
+                    handleLoadState(loadState)
+                }
+            }
         }
     }
+
+    abstract fun handleLoadState(loadState: CombinedLoadStates)
 
     abstract fun getViewBindingAndRecyclerView(
         inflater: LayoutInflater,

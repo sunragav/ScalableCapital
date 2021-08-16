@@ -6,9 +6,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.sunragav.scalablecapital.R
 import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
+import com.sunragav.scalablecapital.core.util.hide
+import com.sunragav.scalablecapital.core.util.show
 import com.sunragav.scalablecapital.databinding.FragmentSecondBinding
 import com.sunragav.scalablecapital.feature.commits.adapter.CommitsAdapter
 import com.sunragav.scalablecapital.feature.commits.transformer.GitHubViewModelTransformer
@@ -35,7 +39,7 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
         activityViewModel.title.postValue(
             resources.getString(
                 R.string.commits_fragment_label,
-                args.repoData
+                args.repoData.repoName
             )
         )
         with(commitsViewModel) {
@@ -60,5 +64,25 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
     ): Pair<FragmentSecondBinding, RecyclerView> {
         binding = FragmentSecondBinding.inflate(inflater, container, false)
         return Pair(binding, binding.rvCommits)
+    }
+
+    override fun handleLoadState(loadState: CombinedLoadStates) {
+        val errorState = when {
+            loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+            loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+            loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+            else -> null
+        }
+        errorState?.let {
+            binding.emptyView.start()
+            binding.rvCommits.hide()
+            binding.commitsCountView.hide()
+        } ?: run {
+            if (loadState.refresh !is LoadState.Loading) {
+                binding.emptyView.stop()
+                binding.rvCommits.show()
+                binding.commitsCountView.show()
+            }
+        }
     }
 }

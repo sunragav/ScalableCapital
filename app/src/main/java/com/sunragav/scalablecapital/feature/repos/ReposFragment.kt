@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.sunragav.scalablecapital.core.BaseRecyclerViewFragment
 import com.sunragav.scalablecapital.core.adapter.AbstractPagingAdapter
@@ -46,5 +48,17 @@ class ReposFragment : BaseRecyclerViewFragment<RepoResponse>() {
     ): Pair<FragmentFirstBinding, RecyclerView> {
         val binding = FragmentFirstBinding.inflate(inflater, container, false)
         return Pair(binding, binding.rvRepo)
+    }
+
+    override fun handleLoadState(loadState: CombinedLoadStates) {
+        val errorState = when {
+            loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+            loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+            loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+            else -> null
+        }
+        errorState?.let {
+
+        }
     }
 }

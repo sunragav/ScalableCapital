@@ -1,17 +1,18 @@
 package com.sunragav.scalablecapital.app.di
 
-import android.app.Application
-import android.content.Context
-import com.sunragav.scalablecapital.MainActivity
-import dagger.Binds
+import com.sunragav.scalablecapital.feature.commits.CommitsFragment
+import com.sunragav.scalablecapital.feature.repos.ReposFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.InternalCoroutinesApi
 
 @Module
 abstract class AppModule {
-    @Binds
-    abstract fun bindContext(application: Application): Context
-
+    @InternalCoroutinesApi
     @ContributesAndroidInjector
-    internal abstract fun contributesMainActivity(): MainActivity
+    internal abstract fun contributesReposFragment(): ReposFragment
+
+    @InternalCoroutinesApi
+    @ContributesAndroidInjector
+    internal abstract fun contributesCommitsFragment(): CommitsFragment
 }

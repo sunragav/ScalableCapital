@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AnimatableRectangleView">
+        <attr name="imageHeightPercent" format="float" />
+        <attr name="displayYear" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="EmptyCommitsView">
+        <attr name="totalImages" format="integer" />
+        <attr name="errorMsg" format="reference" />
+        <attr name="login" format="reference" />
+    </declare-styleable>
+</resources>

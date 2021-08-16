@@ -1,12 +1,25 @@
 <resources>
     <string name="app_name">ScalableCapital</string>
-    <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="first_fragment_label">Github Repos</string>
+    <string name="second_fragment_label">Commits Fragment</string>
+    <string name="commits_fragment_label">Commits for %s</string>
+    <string name="avatar_of_the_owner">Avatar of the owner</string>
+    <plurals name="commits">
+        <item quantity="one">1 Commit</item>
+        <item quantity="other">%d Commits</item>
+    </plurals>
+    <string name="error_message">Something went wrong during network call. Please check your connection and try again.</string>
+    <string name="retry">Retry</string>
+    <string name="commits_count_bar">Image view for commits count bar</string>
+    <string name="empty_commits_text">Sorry \"%s\" is empty.\nEnjoy these jokes instead.</string>
+    <string name="generic_error">Sorry no content.\nEnjoy these jokes instead.</string>
+    <string name="empty_repo_text">Sorry \"%s\" has no repos. Enjoy these jokes instead.</string>
+    <string name="funny_gif_images">Funny gif images</string>
+    <array name="empty_img_urls">
+        <item>https://imgur.com/ak6Ptfr.png</item>
+        <item>https://imgur.com/fOMvmaZ.png</item>
+        <item>https://imgur.com/Q6XH7aV.png</item>
+        <item>https://imgur.com/lKP3uo7.png</item>
+    </array>
 </resources>

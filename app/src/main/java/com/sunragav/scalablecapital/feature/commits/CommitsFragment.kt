@@ -18,9 +18,10 @@ import com.sunragav.scalablecapital.feature.commits.adapter.CommitsAdapter
 import com.sunragav.scalablecapital.feature.commits.presenter.CommitsViewModel
 import com.sunragav.scalablecapital.feature.commits.repository.remote.models.CommitResponse
 import com.sunragav.scalablecapital.presenter.transformer.GitHubViewModelTransformer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -32,9 +33,13 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
     lateinit var viewModelFactory: CommitsViewModel.Factory
     private val commitsViewModel: CommitsViewModel by viewModels(factoryProducer = { viewModelFactory })
     private val args: CommitsFragmentArgs by navArgs()
-    override val listAdapter = CommitsAdapter(GitHubViewModelTransformer())
+    override val listAdapter = CommitsAdapter(GitHubViewModelTransformer()) {
+        commitsViewModel.toggleSelection.postValue(it)
+    }
     private lateinit var binding: FragmentSecondBinding
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun setupViewModel() {
         activityViewModel.title.postValue(
             resources.getString(
@@ -42,12 +47,30 @@ class CommitsFragment : BaseRecyclerViewFragment<CommitResponse>() {
                 args.repoData.repoName
             )
         )
+
+
         with(commitsViewModel) {
-            commitsList.observe(viewLifecycleOwner) {
-                lifecycleScope.launch {
+            /*commitsList.observe(viewLifecycleOwner) {
+                lifecycleScope.launch(Dispatchers.Main) {
                     it.collectLatest {
+                      *//*  it.map { commit ->
+                            Timber.d("Commit %s selected:%s ", commit.sha, commit.selected)
+                            if (commit.selected) {
+                                listAdapter.notifyItemChanged(commit.position)
+                            }
+                        }*//*
                         listAdapter.submitData(it)
                     }
+                }
+            }*/
+            lifecycleScope.launchWhenCreated {
+                commitsList.collectLatest {
+                    listAdapter.submitData(it)
+                }
+            }
+            lifecycleScope.launchWhenCreated {
+                commitsSelectionList.observe(viewLifecycleOwner) {
+                    listAdapter.notifyItemChanged(it)
                 }
             }
             triggerCommitsLoad.postValue(args.repoData)

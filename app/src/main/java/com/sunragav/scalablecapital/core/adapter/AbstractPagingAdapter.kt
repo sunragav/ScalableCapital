@@ -8,9 +8,9 @@ import androidx.viewbinding.ViewBinding
 import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 
 
-abstract class AbstractPagingAdapter<T : GitHubModel> :
+abstract class AbstractPagingAdapter<T : GitHubModel>(diffUtil: DiffUtil.ItemCallback<T>? = null) :
     PagingDataAdapter<T, AbstractPagingAdapter.ViewHolder<T>>(
-        Differentiator()
+        diffUtil ?: Differentiator()
     ) {
     override fun getItemViewType(position: Int): Int {
         return position

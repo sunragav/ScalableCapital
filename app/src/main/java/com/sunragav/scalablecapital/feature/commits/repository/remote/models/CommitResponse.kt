@@ -5,7 +5,9 @@ import com.sunragav.scalablecapital.repository.remote.model.GitHubModel
 data class CommitResponse(
     val sha: String,
     val commit: CommitMessage?,
-    val author: Author?
+    val author: Author?,
+    var selected: Boolean = false,
+    val position: Int = 0
 ) : GitHubModel(identifier = sha)
 
 data class CommitMessage(

@@ -109,4 +109,14 @@
         tools:visibility="visible"
         app:drawableTopCompat="@android:drawable/star_on" />
 
+    <RadioButton
+        android:id="@+id/checkBox"
+        android:checked="true"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

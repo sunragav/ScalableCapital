@@ -50,12 +50,12 @@ abstract class BaseRecyclerViewFragment<T : GitHubModel> : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter.apply {
-                withLoadStateFooter(
-                    footer = GitHubLoadStateAdapter { listAdapter.retry() }
-                )
                 addLoadStateListener { loadState ->
                     handleLoadState(loadState)
                 }
+                withLoadStateFooter(
+                    footer = GitHubLoadStateAdapter { listAdapter.retry() }
+                )
             }
         }
     }
